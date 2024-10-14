@@ -207,32 +207,16 @@ fun SettingsNavBar() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            TextButton( onClick = { /* Acción al hacer clic en el botón */ },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
-                    contentColor = MaterialTheme.colorScheme.background // Color del texto
-                ),
 
-
-                ) {
-                Text(text = "AjustesBarbero")
-            }
             TextButton(onClick = { /* Acción para Ajuste 2 */ },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
                     contentColor = MaterialTheme.colorScheme.background // Color del texto
                 )
             ) {
-                Text(text = "AjustesCortes")
+                Text(text = "Ajustes App")
             }
-            TextButton(onClick = { /* Acción para Ajuste 3 */ },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
-                    contentColor = MaterialTheme.colorScheme.background // Color del texto
-                )
-            ) {
-                Text(text = "AjustesResumen")
-            }
+
         }
     }
 }
