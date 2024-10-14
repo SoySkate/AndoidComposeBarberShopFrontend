@@ -65,6 +65,13 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation ("androidx.navigation:navigation-compose:2.5.3")
+    // Retrofit para llamadas HTTP
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    // Convertidor de JSON para Retrofit (puedes usar Gson o Kotlinx.serialization)
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Coroutines para manejar tareas asíncronas
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
