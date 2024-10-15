@@ -33,6 +33,11 @@ import com.example.barbershopapp.ui.theme.BarberShopAppTheme
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -62,6 +67,17 @@ data class Business(val businessName: String, val businessOwner: String)
 //data class Cortes(val name: String, val price: String)
 private val negocio = Business("Barberia","Tio JuanC")
 
+
+@Composable
+fun Navigation() {
+    val navController = rememberNavController() // Crear un NavController
+    NavHost(navController = navController, startDestination = "home") {
+        composable("cortes") { CortesScreenPreview() } //pantalla cortes
+        composable("home") { PreviewButtons(navController) } //pantalla home") { CortesScreenPreview() } //pantalla cortes
+        composable("barberos") { BarberScreenPreview()  } // Pantalla de barberos
+    }
+}
+
 //Se puede acceder al material de ui.theme
 @Composable
 fun HomeImg() {
@@ -90,16 +106,7 @@ fun MySideTexts(business: Business) {
     }
 }
 
-//Funcion ejemplo para una lista de objetos
-/*
-@Composable
-fun MyMessages(cortes: List<Cortes>){
-    //LazyCol es una lista inteligente para renderiar solo los elementos que son visibles
-    LazyColumn{
-        items(cortes){corte->
 
-    }
-}*/
 @Composable
 fun MyComponent(business: Business) {
     // Layout para representación de filas, centrado
@@ -118,9 +125,6 @@ fun MyComponent(business: Business) {
 }
 
 
-
-
-
 @Composable
 fun PreviewComponents() {
     BarberShopAppTheme {
@@ -129,7 +133,7 @@ fun PreviewComponents() {
         Column (modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background).verticalScroll(scrollState)){
             Spacer(Modifier.height(10.dp))
             MyComponent(negocio)
-            PreviewButtons()
+            Navigation()
         }
 
     }
@@ -137,7 +141,8 @@ fun PreviewComponents() {
 
 
 @Composable
-fun PreviewButtons() {
+fun PreviewButtons(navController: NavController) {
+
     BarberShopAppTheme {
         Column(
             modifier = Modifier
@@ -149,7 +154,7 @@ fun PreviewButtons() {
             Spacer(Modifier.height(100.dp))
 
             Button(
-                onClick = { /* Acción al hacer clic en el botón */ },
+                onClick = {  navController.navigate("barberos") },
                 modifier = Modifier
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -165,7 +170,7 @@ fun PreviewButtons() {
             Spacer(Modifier.height(10.dp))
 
             Button(
-                onClick = { /* Acción al hacer clic en el botón */ },
+                onClick = { navController.navigate("cortes") },
                 modifier = Modifier
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -216,7 +221,6 @@ fun SettingsNavBar() {
             ) {
                 Text(text = "Ajustes App")
             }
-
         }
     }
 }
@@ -243,6 +247,7 @@ fun HomeScreenPreview() {
         }
     )
 }
+
 
 
 

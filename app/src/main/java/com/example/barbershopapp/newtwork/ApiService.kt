@@ -1,5 +1,5 @@
 // ApiService.kt
-package com.example.barbershopapp
+package com.example.barbershopapp.newtwork
 
 import retrofit2.http.Body
 import retrofit2.http.DELETE
