@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.0.16</domain> Intentando conectare con mi ip xd
+        <domain includeSubdomains="true">192.168.0.19</domain>  <!-- Tu dirección IP del local host (mipc.local)  -->
     </domain-config>
 </network-security-config>

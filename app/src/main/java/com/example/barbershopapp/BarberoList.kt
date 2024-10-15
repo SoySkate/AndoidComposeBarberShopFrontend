@@ -51,7 +51,7 @@ fun PreviewBarberComponents() {
         } else {
             LazyColumn {
                 items(barberos) { barbero ->
-                    Text(text = barbero.name)
+                    Text(text = barbero.barberoNombre)
                 }
             }
         }

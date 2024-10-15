@@ -9,8 +9,8 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 data class Barbero(
-    val id: Int,
-    val name: String
+    val idbarbero: Int,
+    val barberoNombre: String
 )
 
 interface ApiService {

@@ -101,7 +101,7 @@ fun MySideTexts(business: Business) {
     //layout para represatncion de columnas
     Column {
         MyText(business.businessName,MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.titleLarge)
-        Spacer(Modifier.height(10.dp))
+        //Spacer(Modifier.height(10.dp))
         MyText(business.businessOwner, Color.Red, style = MaterialTheme.typography.titleSmall)
     }
 }
@@ -119,7 +119,7 @@ fun MyComponent(business: Business) {
         horizontalArrangement = Arrangement.Center // Centra el contenido horizontalmente
     ) {
         HomeImg()
-        Spacer(Modifier.width(10.dp)) // Ajuste del espaciado
+        //Spacer(Modifier.width(10.dp)) // Ajuste del espaciado
         MySideTexts(business)
     }
 }
@@ -129,8 +129,13 @@ fun MyComponent(business: Business) {
 fun PreviewComponents() {
     BarberShopAppTheme {
         //de esta forma podemos hacer que se pueda hacer scroll scroll state y modifier al column
-        val scrollState = rememberScrollState()
-        Column (modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background).verticalScroll(scrollState)){
+        //val scrollState = rememberScrollState()
+        Column (modifier =
+        Modifier.fillMaxWidth()
+            .background(MaterialTheme
+                .colorScheme.background)
+            //.verticalScroll(scrollState)
+                ){
             Spacer(Modifier.height(10.dp))
             MyComponent(negocio)
             Navigation()
@@ -151,7 +156,7 @@ fun PreviewButtons(navController: NavController) {
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Spacer(Modifier.height(100.dp))
+            //Spacer(Modifier.height(100.dp))
 
             Button(
                 onClick = {  navController.navigate("barberos") },
@@ -167,7 +172,7 @@ fun PreviewButtons(navController: NavController) {
                 Text(text = "Barberos")
             }
 
-            Spacer(Modifier.height(10.dp))
+            //Spacer(Modifier.height(10.dp))
 
             Button(
                 onClick = { navController.navigate("cortes") },
@@ -183,7 +188,7 @@ fun PreviewButtons(navController: NavController) {
                 Text(text = "Cortes")
             }
 
-            Spacer(Modifier.height(10.dp))
+            //Spacer(Modifier.height(10.dp))
 
             Button(
                 onClick = { /* Acción al hacer clic en el botón */ },
@@ -238,7 +243,6 @@ fun HomeScreenPreview() {
             // Aquí va el contenido principal de la pantalla
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background)
             ) {
