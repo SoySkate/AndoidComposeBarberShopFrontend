@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    //dependencias agregadas:
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
@@ -76,6 +77,7 @@ dependencies {
     // Otras dependencias
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1") // Para ViewModel con Compose
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1") // Para soporte de coroutines
+    //dependencias agregadas FIN
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

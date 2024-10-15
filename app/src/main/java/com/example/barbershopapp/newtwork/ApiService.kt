@@ -8,6 +8,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
+////Aqui recordar que los atributos de la class tienen que ser igaules a la DB
 data class Barbero(
     val idbarbero: Int,
     val barberoNombre: String
