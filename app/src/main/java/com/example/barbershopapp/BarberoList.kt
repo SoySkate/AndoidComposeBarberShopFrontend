@@ -73,6 +73,15 @@ fun PreviewBarberComponents() {
                     idbarbero = selectedBarbero?.idbarbero ?: 0
                 )
                     UpdateBarber(editBarbero)
+                    Button(
+                    onClick = {
+                        updateBarbero=false
+                    },
+                    modifier = Modifier.padding(end = 4.dp), // Espacio entre botones
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Red
+                    )){Text(text = "Close")}
             }
             LazyColumn {
                 items(barberos) { barbero ->
@@ -192,6 +201,9 @@ fun BarberScreenPreview(){
     }
 
 }
+
+
+//to update barber
 @Composable
 fun UpdateBarber(barbero: Barbero){
     var barberoNombre by remember { mutableStateOf("") }
@@ -233,6 +245,7 @@ fun UpdateBarber(barbero: Barbero){
     }
 }
 
+//to create new barber
 @Composable
 fun BarberScreenWithForm() {
     var showForm by remember { mutableStateOf(false) }

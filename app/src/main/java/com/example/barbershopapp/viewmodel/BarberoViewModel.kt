@@ -26,7 +26,7 @@ class BarberoViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // Llama a la API para obtener la lista de barberos
-                val barberosList = RetrofitInstance.api.getBarberos()
+                val barberosList = RetrofitInstance.barberoApi.getBarberos()
                 _barberos.value = barberosList // Actualiza el estado
                 Log.d("BarberoViewModel", "¡Todo salió bien EN VIEWMODEL!");
                 Log.d("BarberoViewModel", "Barberos cargados: ${_barberos.value.size}")
@@ -41,7 +41,7 @@ class BarberoViewModel : ViewModel() {
         viewModelScope.launch {
         try{
             val newBarbero = Barbero(0, barberoNombre)
-            val createdBarbero = RetrofitInstance.api.createBarbero(newBarbero)
+            val createdBarbero = RetrofitInstance.barberoApi.createBarbero(newBarbero)
             Log.d("BarberoViewModel", "Barbero creado: $createdBarbero")
 
         }catch (e: Exception) {
@@ -55,7 +55,7 @@ class BarberoViewModel : ViewModel() {
     fun deleteBarbero(barbero: Barbero) {
         viewModelScope.launch {
             try{
-                RetrofitInstance.api.deleteBarbero(barbero.idbarbero)
+                RetrofitInstance.barberoApi.deleteBarbero(barbero.idbarbero)
                 Log.d("BarberoViewModel", "Deleting Barbero")
 
                 }catch (e: Exception) {
@@ -68,7 +68,7 @@ class BarberoViewModel : ViewModel() {
             try{
                 //aqui hay que especificar que el contenido del body sea texto plano
                 val requestBody =barbero.barberoNombre.toRequestBody("text/plain".toMediaType())
-                RetrofitInstance.api.updateBarbero(barbero.idbarbero, requestBody)
+                RetrofitInstance.barberoApi.updateBarbero(barbero.idbarbero, requestBody)
                 Log.d("BarberoViewModel", "Barbero Actualizado: $barbero")
 
             }catch (e: Exception) {
