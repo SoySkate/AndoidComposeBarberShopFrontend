@@ -1,6 +1,7 @@
 // ApiService.kt
 package com.example.barbershopapp.newtwork
 
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -11,7 +12,7 @@ import retrofit2.http.Path
 ////Aqui recordar que los atributos de la class tienen que ser igaules a la DB
 data class Barbero(
     val idbarbero: Int,
-    val barberoNombre: String
+    var barberoNombre: String
 )
 
 interface ApiService {
@@ -28,10 +29,13 @@ interface ApiService {
     suspend fun createBarbero(@Body newBarbero: Barbero): Barbero
 
     // PUT para actualizar un barbero existente
+    //en este caso hay que usar requestbody en vez de string pq no parsea bien y se
+    //duplican las comillas de string
     @PUT("barberos/{id}")
-    suspend fun updateBarbero(@Path("id") id: Int, @Body updatedBarbero: Barbero): Barbero
+    suspend fun updateBarbero(@Path("id") id: Int, @Body updatedBarbero: RequestBody): Barbero
 
     // DELETE para eliminar un barbero por ID
     @DELETE("barberos/{id}")
     suspend fun deleteBarbero(@Path("id") id: Int)
+
 }

@@ -8,11 +8,17 @@ import com.example.barbershopapp.newtwork.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class BarberoViewModel : ViewModel() {
     // Estado para almacenar la lista de barberos
     private val _barberos = MutableStateFlow<List<Barbero>>(emptyList())
     val barberos: StateFlow<List<Barbero>> = _barberos
+
+    // Estado para almacenar el barbero seleccionado
+    private val _selectedBarbero = MutableStateFlow<Barbero?>(null)
+    val selectedBarbero: StateFlow<Barbero?> = _selectedBarbero
 
     // Función para cargar los barberos
     fun loadBarberos() {
@@ -29,4 +35,46 @@ class BarberoViewModel : ViewModel() {
             }
         }
     }
+
+    //funcion para crear Barbero
+    fun createBarbero(barberoNombre: String){
+        viewModelScope.launch {
+        try{
+            val newBarbero = Barbero(0, barberoNombre)
+            val createdBarbero = RetrofitInstance.api.createBarbero(newBarbero)
+            Log.d("BarberoViewModel", "Barbero creado: $createdBarbero")
+
+        }catch (e: Exception) {
+            Log.e("BarberoViewModel", "Error al cargar barberos: ${e.message}")
+        }
+        }
+    }
+    fun selectedBarbero(barbero:Barbero){
+        _selectedBarbero.value = barbero
+    }
+    fun deleteBarbero(barbero: Barbero) {
+        viewModelScope.launch {
+            try{
+                RetrofitInstance.api.deleteBarbero(barbero.idbarbero)
+                Log.d("BarberoViewModel", "Deleting Barbero")
+
+                }catch (e: Exception) {
+                Log.e("BarberoViewModel", "Error al eliminar barbero: ${e.message}")
+            }
+        }
+    }
+    fun updateBarbero(barbero: Barbero) {
+        viewModelScope.launch {
+            try{
+                //aqui hay que especificar que el contenido del body sea texto plano
+                val requestBody =barbero.barberoNombre.toRequestBody("text/plain".toMediaType())
+                RetrofitInstance.api.updateBarbero(barbero.idbarbero, requestBody)
+                Log.d("BarberoViewModel", "Barbero Actualizado: $barbero")
+
+            }catch (e: Exception) {
+                Log.e("BarberoViewModel", "Error al actualizar barbero ${e.message}")
+            }
+        }
+    }
+
 }
