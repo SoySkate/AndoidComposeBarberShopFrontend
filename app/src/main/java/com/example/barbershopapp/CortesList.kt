@@ -42,25 +42,25 @@ import com.example.barbershopapp.viewmodel.CortesViewModel
 
 
 @Composable
-fun PreviewCorteComponents() {
-    val corteViewModel: CortesViewModel = viewModel()
+fun PreviewCorteComponents(corteViewModel: CortesViewModel) {
+    //val corteViewModel: CorteViewModel = viewModel()
 
-    // Cargar barberos al iniciar la pantalla
+    // Cargar cortes al iniciar la pantalla
     corteViewModel.loadCortes()
 
-    // Observar los cambios en la lista de barberos
+    // Observar los cambios en la lista de cortes
     val cortes by corteViewModel.cortes.collectAsState()
 
-    // Variable para almacenar el barbero seleccionado
+    // Variable para almacenar el cortes seleccionado
     var selectedCorte by remember { mutableStateOf<Corte?>(null) }
 
     // Variable para controlar si se deben mostrar los botones después de un long press
     var mostrarBotones by remember { mutableStateOf(false) }
     var updateCorte by remember { mutableStateOf(false) }
 
-    // Pasar la lista de barberos a la función que crea tu UI
+    // Pasar la lista de cortes a la función que crea tu UI
     if (cortes.isEmpty()) {
-        Text("No hay barberos disponibles.")
+        Text("No hay cortes disponibles.")
     } else {
         Column {
             if (updateCorte) {
@@ -69,7 +69,7 @@ fun PreviewCorteComponents() {
                     precioDefecto = selectedCorte?.precioDefecto ?: 0.00,
                     idcorte = selectedCorte?.idcorte ?: 0
                 )
-                UpdateCorte(editCorte)
+                UpdateCorte(editCorte, corteViewModel)
                 Button(
                     onClick = {
                         updateCorte=false
@@ -82,18 +82,18 @@ fun PreviewCorteComponents() {
             }
             LazyColumn {
                 items(cortes) { corte ->
-                    // Cada elemento de la lista es un botón que al ser clicado selecciona el corte
+                    // Cada elemento de la lista es un botón que al ser clicado selecciona el cortes
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                             .background(
-                                if ( selectedCorte == corte) Color.Gray else Color.Transparent
+                                if (selectedCorte == corte) Color.Gray else Color.Transparent
                             )
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onTap = {
-                                        // Seleccionar el barbero con un solo toque
+                                        // Seleccionar el corte con un solo toque
                                         selectedCorte = corte
                                         corteViewModel.selectedCorte(corte)
                                         mostrarBotones = false // Ocultar los botones al seleccionar con un toque
@@ -108,22 +108,15 @@ fun PreviewCorteComponents() {
                             }
                             .padding(12.dp)
                     ) {
-                        Row(){
-                            // Mostrar el nombre del corte
-                            Text(
-                                text = corte.corteNombre,
-                                modifier = Modifier
-                                    .weight(1f) // Hacer que el Text ocupe el espacio sobrante
-                                    .padding(end = 8.dp)
-                            )
-                            // Mostrar el nombre del corte
-                            Text(
-                                text = corte.precioDefecto.toString(),
-                                modifier = Modifier
-                                    .weight(1f) // Hacer que el Text ocupe el espacio sobrante
-                                    .padding(end = 8.dp)
-                            )
-                        }
+
+                        // Mostrar el nombre del corte
+                        Text(
+                            text = corte.corteNombre+"-->  "+corte.precioDefecto.toString(),
+                            modifier = Modifier
+                                .weight(1f) // Hacer que el Text ocupe el espacio sobrante
+                                .padding(end = 8.dp)
+                        )
+
                         // Mostrar los botones solo si el corte está seleccionado y se mantiene presionado
                         if (selectedCorte == corte && mostrarBotones) {
                             // Botón para editar el corte
@@ -168,12 +161,12 @@ fun PreviewCorteComponents() {
 }
 
 
-//to update barber
+//to update corte
 @Composable
-fun UpdateCorte(corte: Corte){
+fun UpdateCorte(corte: Corte, corteViewModel: CortesViewModel){
     var corteNombre by remember { mutableStateOf(corte.corteNombre) }
     var precioDefecto by remember { mutableStateOf(corte.precioDefecto) }
-    val cortesViewModel: CortesViewModel = viewModel()
+    //val cortesViewModel: CortesViewModel = viewModel()
 
     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
@@ -212,8 +205,8 @@ fun UpdateCorte(corte: Corte){
                         //Actualizacion del corte
                         corte.corteNombre = corteNombre
                         corte.precioDefecto = precioDefecto
-                        cortesViewModel.updateCorteNombre(corte)
-                        cortesViewModel.updateCortePrecio(corte)
+                        corteViewModel.updateCorteNombre(corte)
+                        corteViewModel.updateCortePrecio(corte)
                         println("Corte Actualizado: $corteNombre")
                         // Luego de la creación, limpiar el campo de entrada
                         corteNombre = ""
@@ -230,10 +223,10 @@ fun UpdateCorte(corte: Corte){
     }
 }
 
-@Preview(showSystemUi = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Preview(showSystemUi = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun CorteListPreview() {
+fun CorteListPreview(corteViewModel: CortesViewModel) {
     var showCorteComponents by remember { mutableStateOf(false) }
 
     Column {
@@ -254,20 +247,20 @@ fun CorteListPreview() {
             Text(text = "Show Cortes List")
         }
 
-        // Mostrar PreviewBarberComponents si showBarberComponents es true
+        // Mostrar PreviewCorteComponents si showCorteComponents es true
         if (showCorteComponents) {
-            PreviewCorteComponents()
+            PreviewCorteComponents(corteViewModel)
         }
     }
 }
 
-//to create new barber
+//to create new corte
 @Composable
-fun CorteScreenWithForm() {
+fun CorteScreenWithForm(corteViewModel: CortesViewModel) {
     var showForm by remember { mutableStateOf(false) }
     var corteNombre by remember { mutableStateOf("") }
     var precioDefecto by remember { mutableStateOf(0.00 ) }
-    val corteViewModel: CortesViewModel = viewModel()
+    //val corteViewModel: CortesViewModel = viewModel()
 
     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         // Toggle switch para mostrar/ocultar el formulario
@@ -315,9 +308,9 @@ fun CorteScreenWithForm() {
                         // Aquí puedes agregar la lógica para crear un nuevo corte
                         // Por ejemplo, llamar a una función del ViewModel para enviar los datos
                         if (corteNombre.isNotEmpty() && (precioDefecto != 0.00)) {
-                            // Simulación de la creación del barbero
+                            // Simulación de la creación del corte
                             corteViewModel.createCorte(corteNombre,precioDefecto)
-                            println("Nuevo barbero creado: $corteNombre")
+                            println("Nuevo corte creado: $corteNombre")
                             // Luego de la creación, limpiar el campo de entrada
                             corteNombre = ""
                             // Cerrar el formulario
@@ -335,17 +328,18 @@ fun CorteScreenWithForm() {
 }
 
 @Composable
-fun CortesScreenPreview(){
+fun CortesScreenPreview(corteViewModel: CortesViewModel){
     Column(){
-        CorteScreenWithFormPreview()
+        CorteScreenWithFormPreview(corteViewModel)
         Spacer(modifier = Modifier.height(6.dp))
-        CorteListPreview()
+        CorteListPreview(corteViewModel)
     }
 
 }
 
+
+//@Preview
 @Composable
-@Preview
-fun CorteScreenWithFormPreview() {
-   CorteScreenWithForm()
+fun CorteScreenWithFormPreview(corteViewModel: CortesViewModel) {
+   CorteScreenWithForm(corteViewModel)
 }

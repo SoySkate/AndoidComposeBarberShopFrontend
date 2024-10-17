@@ -2,6 +2,7 @@ package com.example.barbershopapp
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Message
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -33,48 +34,31 @@ import com.example.barbershopapp.ui.theme.BarberShopAppTheme
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.barbershopapp.viewmodel.BarberoViewModel
+import com.example.barbershopapp.viewmodel.CortesViewModel
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-/*
-private val listaNegocios :List<Business> = listOf(
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC"),
-    Business("Barberia","Tio JuanC")
-)*/
+
 data class Business(val businessName: String, val businessOwner: String)
 //data class Cortes(val name: String, val price: String)
 private val negocio = Business("Barberia","Tio JuanC")
 
 
 @Composable
-fun Navigation() {
+fun Navigation(barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
     val navController = rememberNavController() // Crear un NavController
     NavHost(navController = navController, startDestination = "home") {
-        composable("cortes") { CortesScreenPreview() } //pantalla cortes
+        composable("cortes") { CortesScreenPreview(corteViewModel) } //pantalla cortes
         composable("home") { PreviewButtons(navController) } //pantalla home") { CortesScreenPreview() } //pantalla cortes
-        composable("barberos") { BarberScreenPreview()  } // Pantalla de barberos
+        composable("barberos") { BarberScreenPreview(barberViewModel)  } // Pantalla de barberos
     }
 }
 
@@ -97,18 +81,19 @@ fun MyText(text:String, color: Color, style: TextStyle){
 }
 
 @Composable
-fun MySideTexts(business: Business) {
-    //layout para represatncion de columnas
+fun MySideTexts(business: Business, barberViewModel: BarberoViewModel) {
+    val selectedBarbero by barberViewModel.selectedBarbero.collectAsState()
+    //layout para representacion de columnas
     Column {
         MyText(business.businessName,MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(10.dp))
-        MyText(business.businessOwner, Color.Red, style = MaterialTheme.typography.titleSmall)
+        MyText(selectedBarbero?.barberoNombre ?: "Barbero No selecccionado.", Color.Red, style = MaterialTheme.typography.titleSmall)
     }
 }
 
 
 @Composable
-fun MyComponent(business: Business) {
+fun MyComponent(business: Business,barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
     // Layout para representación de filas, centrado
     Row(
         modifier = Modifier
@@ -120,13 +105,13 @@ fun MyComponent(business: Business) {
     ) {
         HomeImg()
         Spacer(Modifier.width(10.dp)) // Ajuste del espaciado
-        MySideTexts(business)
+        MySideTexts(business, barberViewModel)
     }
 }
 
 
 @Composable
-fun PreviewComponents() {
+fun PreviewComponents(barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
     BarberShopAppTheme {
         //de esta forma podemos hacer que se pueda hacer scroll scroll state y modifier al column
         //val scrollState = rememberScrollState()
@@ -137,8 +122,8 @@ fun PreviewComponents() {
             //.verticalScroll(scrollState)
                 ){
             Spacer(Modifier.height(10.dp))
-            MyComponent(negocio)
-            Navigation()
+            MyComponent(negocio,barberViewModel,corteViewModel)
+            Navigation(barberViewModel, corteViewModel)
         }
 
     }
@@ -230,10 +215,10 @@ fun SettingsNavBar() {
     }
 }
 
-@Preview(showSystemUi = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Preview(showSystemUi = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun HomeScreenPreview() {
+fun HomeScreenPreview(barberoViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
     Scaffold(
         modifier = Modifier.background(Color.Black),
         bottomBar = {
@@ -246,7 +231,7 @@ fun HomeScreenPreview() {
                     .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background)
             ) {
-                PreviewComponents()
+                PreviewComponents(barberoViewModel, corteViewModel)
             }
         }
     )

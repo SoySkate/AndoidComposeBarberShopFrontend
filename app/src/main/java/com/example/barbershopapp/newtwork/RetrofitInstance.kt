@@ -25,4 +25,9 @@ object RetrofitInstance {
         retrofit.create(CorteApiService::class.java)
     }
 
+    // Crea una instancia de CorteBarberoApiService
+    val corteBarberoApi: CorteBarberoApiService by lazy {
+        retrofit.create(CorteBarberoApiService::class.java)
+    }
+
 }

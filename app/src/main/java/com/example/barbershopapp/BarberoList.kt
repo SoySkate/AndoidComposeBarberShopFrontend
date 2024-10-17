@@ -42,18 +42,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.barbershopapp.newtwork.Barbero
 import com.example.barbershopapp.ui.theme.BarberShopAppTheme
 import com.example.barbershopapp.viewmodel.BarberoViewModel
+import com.example.barbershopapp.viewmodel.CortesViewModel
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun PreviewBarberComponents() {
-    val barberoViewModel: BarberoViewModel = viewModel()
+fun PreviewBarberComponents(barberViewModel: BarberoViewModel) {
+    //val barberoViewModel: BarberoViewModel = viewModel()
 
     // Cargar barberos al iniciar la pantalla
-    barberoViewModel.loadBarberos()
+    barberViewModel.loadBarberos()
 
     // Observar los cambios en la lista de barberos
-    val barberos by barberoViewModel.barberos.collectAsState()
+    val barberos by barberViewModel.barberos.collectAsState()
 
     // Variable para almacenar el barbero seleccionado
     var selectedBarbero by remember { mutableStateOf<Barbero?>(null) }
@@ -98,7 +99,7 @@ fun PreviewBarberComponents() {
                                     onTap = {
                                         // Seleccionar el barbero con un solo toque
                                         selectedBarbero = barbero
-                                        barberoViewModel.selectedBarbero(barbero)
+                                        barberViewModel.selectedBarbero(barbero)
                                         mostrarBotones = false // Ocultar los botones al seleccionar con un toque
                                     },
                                     onLongPress = {
@@ -141,7 +142,7 @@ fun PreviewBarberComponents() {
                             Button(
                                 onClick = {
                                     // Lógica para eliminar el barbero
-                                    barberoViewModel.deleteBarbero(barbero)
+                                    barberViewModel.deleteBarbero(barbero)
                                     println("Eliminar barbero: ${barbero.barberoNombre}")
                                     selectedBarbero = null
                                 },
@@ -162,10 +163,10 @@ fun PreviewBarberComponents() {
         }
     }
 
-@Preview(showSystemUi = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Preview(showSystemUi = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun BarberListPreview() {
+fun BarberListPreview(barberViewModel: BarberoViewModel) {
     var showBarberComponents by remember { mutableStateOf(false) }
 
     Column {
@@ -188,16 +189,16 @@ fun BarberListPreview() {
 
         // Mostrar PreviewBarberComponents si showBarberComponents es true
         if (showBarberComponents) {
-            PreviewBarberComponents()
+            PreviewBarberComponents(barberViewModel)
         }
     }
 }
 @Composable
-fun BarberScreenPreview(){
+fun BarberScreenPreview(barberViewModel: BarberoViewModel){
     Column(){
         BarberScreenWithFormPreview()
         Spacer(modifier = Modifier.height(6.dp))
-        BarberListPreview()
+        BarberListPreview(barberViewModel)
     }
 
 }

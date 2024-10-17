@@ -1,10 +1,16 @@
 TODO:
+-Bastante interesante guardar en el backen el currentBarber, Así cuandok se abra la app se ponga cual
+es el currentbarber y simplemente empieze a listar cortes
 
-
-BarberloList.kt line -71-73 estic fent algo malamente pero funciona pero sale rojo
+-BarberloList.kt line -71-73 estic fent algo malamente pero funciona pero sale rojo
 
 
 -I el precio no es un buen decimal xdMH
+
+[[a tener en cuenta]]
+{{{EN EL CORTEBARBERAPISERVICE al crear el objeto no le pongo ninguna fecha (pq ya se crea sola en el backedn}}}
+
+
 
 DONE:
 -Al editar un barber sale con las comillas de string el nuevo name pero beuno almenos va

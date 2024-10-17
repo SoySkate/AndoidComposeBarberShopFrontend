@@ -11,18 +11,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.barbershopapp.ui.theme.BarberShopAppTheme
+import com.example.barbershopapp.viewmodel.BarberoViewModel
+import com.example.barbershopapp.viewmodel.CortesViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BarberShopAppTheme {
-                HomeScreenPreview()
+                // Crear el ViewModel en la actividad
+                val barberoViewModel: BarberoViewModel = viewModel()
+                val corteViewModel: CortesViewModel = viewModel()
+                HomeScreenPreview(barberoViewModel,corteViewModel)
             }
         }
     }
