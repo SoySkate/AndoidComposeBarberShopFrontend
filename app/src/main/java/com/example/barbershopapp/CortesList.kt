@@ -329,6 +329,7 @@ fun CorteScreenWithForm(corteViewModel: CortesViewModel) {
 
 @Composable
 fun CortesScreenPreview(corteViewModel: CortesViewModel){
+    corteViewModel.setCorteScreenOn(true)
     Column(){
         CorteScreenWithFormPreview(corteViewModel)
         Spacer(modifier = Modifier.height(6.dp))

@@ -18,6 +18,12 @@ data class CorteBarbero(
     var barbero: Barbero,
     var precioFinal: Double
 )
+data class CorteBarberoRequest(
+    val idcorte: Int,
+    var idbarbero: Int,
+    var fechaCorte: String,
+    var precioFinal: Double
+)
 
 interface CorteBarberoApiService {
     @GET("cortebarbero")
@@ -38,7 +44,7 @@ interface CorteBarberoApiService {
 
     //create
     @POST("cortebarbero")
-    suspend fun createCorteBarbero(@Body newCorteBarbero: CorteBarbero): CorteBarbero
+    suspend fun createCorteBarbero(@Body newCorteBarbero: CorteBarberoRequest): CorteBarberoRequest
 
 
     //updateprice

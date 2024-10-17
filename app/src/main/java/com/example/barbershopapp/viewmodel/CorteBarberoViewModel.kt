@@ -5,10 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.barbershopapp.newtwork.Barbero
 import com.example.barbershopapp.newtwork.CorteBarbero
+import com.example.barbershopapp.newtwork.CorteBarberoRequest
 import com.example.barbershopapp.newtwork.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+
 
 class CorteBarberoViewModel : ViewModel() {
     //getAll
@@ -119,9 +123,11 @@ class CorteBarberoViewModel : ViewModel() {
     }
     //funcion para crear cortesBarbero
     fun createCortesBarbero(corteBarbero: CorteBarbero){
+        Log.d("CortesBarberoViewModel", "CREANDO cortesBarbero...")
         viewModelScope.launch {
             try{
-                val newCorteBarbero = CorteBarbero(0, corteBarbero.corte, corteBarbero.barbero, corteBarbero.precioFinal )
+                val fechaActual = LocalDate.now().toString()
+                val newCorteBarbero = CorteBarberoRequest(corteBarbero.corte.idcorte, corteBarbero.barbero.idbarbero, fechaActual, corteBarbero.precioFinal )
                 val createdBarbero = RetrofitInstance.corteBarberoApi.createCorteBarbero(newCorteBarbero)
                 Log.d("CortesBarberoViewModel", "cortesBarbero creado: $createdBarbero")
 

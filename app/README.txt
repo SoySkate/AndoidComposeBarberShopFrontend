@@ -1,23 +1,22 @@
 TODO:
--Bastante interesante guardar en el backen el currentBarber, Así cuandok se abra la app se ponga cual
-es el currentbarber y simplemente empieze a listar cortes
+-Bastante interesante guardar en el backen el currentBarber, Así cuando se abra la app se ponga cual
+es el currentbarber y simplemente empieze a listar cortes?
 
 -BarberloList.kt line -71-73 estic fent algo malamente pero funciona pero sale rojo
 
-
+-Cuando se selecciona un barbero ir al CorteScreen o ir al HomeScreen? Y un corte ir al homeScreen
 -I el precio no es un buen decimal xdMH
-
-[[a tener en cuenta]]
-{{{EN EL CORTEBARBERAPISERVICE al crear el objeto no le pongo ninguna fecha (pq ya se crea sola en el backedn}}}
-
 
 
 DONE:
+-Crear Barbero
+-Crear Corte
+-Crear CorteBarbero
 -Al editar un barber sale con las comillas de string el nuevo name pero beuno almenos va
 Tiene que ver creo con lo de @RequestBody pero le pasas solo un string, entonces yo le pongo
 @Body y le paso un string debe duplicar las comillas de body o del string
 
-
+(parecia guay pero no lo he leído deltodo asi que xd):
 suggest by gemini to improve BarberoList.kt:
 
 PreviewBarberComponents: Displays a list of barbers with selection, editing (through UpdateBarber), and deletion functionalities.

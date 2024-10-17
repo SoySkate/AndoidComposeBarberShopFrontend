@@ -40,7 +40,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.barbershopapp.newtwork.Barbero
+import com.example.barbershopapp.newtwork.Corte
+import com.example.barbershopapp.newtwork.CorteBarbero
 import com.example.barbershopapp.viewmodel.BarberoViewModel
+import com.example.barbershopapp.viewmodel.CorteBarberoViewModel
 import com.example.barbershopapp.viewmodel.CortesViewModel
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -57,7 +61,9 @@ fun Navigation(barberViewModel: BarberoViewModel, corteViewModel: CortesViewMode
     val navController = rememberNavController() // Crear un NavController
     NavHost(navController = navController, startDestination = "home") {
         composable("cortes") { CortesScreenPreview(corteViewModel) } //pantalla cortes
-        composable("home") { PreviewButtons(navController) } //pantalla home") { CortesScreenPreview() } //pantalla cortes
+        composable("home") {
+            corteViewModel.setCorteScreenOn(false)
+            PreviewButtons(navController) } //pantalla home") { CortesScreenPreview() } //pantalla cortes
         composable("barberos") { BarberScreenPreview(barberViewModel)  } // Pantalla de barberos
     }
 }
@@ -192,7 +198,9 @@ fun PreviewButtons(navController: NavController) {
     }
 }
 @Composable
-fun SettingsNavBar() {
+fun SettingsNavBar(barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel, corteBarberoViewModel: CorteBarberoViewModel) {
+
+    val corteScreenOn by corteViewModel.corteScreenOn.collectAsState()
 
     BottomAppBar(
         modifier = Modifier.fillMaxWidth(),
@@ -211,6 +219,52 @@ fun SettingsNavBar() {
             ) {
                 Text(text = "Ajustes App")
             }
+            if(corteScreenOn==true){
+            //esto es para hacerlo bool asi cuando este dentro la screen cortes list se abra
+            TextButton(onClick = {
+              // var existBarberAndCorte by remember { mutableStateOf(false) }
+                var corte = corteViewModel.selectedCorte.value
+                var precioFinal = corte?.precioDefecto
+                var barbero = barberViewModel.selectedBarbero.value
+
+//                if(barbero != null && corte!=null){
+//                    Log.d("CortesBarberoViewModel", "EXISTEN barberos y cortes en el viewModel")
+//                    existBarberAndCorte = true
+//                }else{
+//                    Log.d("CortesBarberoViewModel", "no existen los abrberos ni os cortes ene l viewmodel selected")
+//                    Log.d("CortesBarberoViewModel", "BARBER SLECTED: ${barberViewModel.selectedBarbero}")
+//                    Log.d("CortesBarberoViewModel", "CORTE SELECTED: ${corteViewModel.selectedCorte}")
+//                    existBarberAndCorte=false
+//                }
+
+                Log.d("CortesBarberoViewModel", "Tocando bototn de COMENZAR")
+                Log.d("CortesBarberoViewModel", "Valor de barbero: $barbero")
+                Log.d("CortesBarberoViewModel", "Valor de corte: $corte")
+
+                if(corte!=null && barbero!=null){
+                    Log.d("CortesBarberoViewModel", "DENTRO condicional botoncomenzar")
+//                     // Verificar que corte y barbero no sean nulos antes de crear CorteBarbero
+                            corte?.let { nonNullCorte ->
+                                barbero?.let { nonNullBarbero ->
+                                    val cortebarbero = CorteBarbero(
+                                        idcortebarbero = 0,
+                                        corte = nonNullCorte,
+                                        barbero = nonNullBarbero,
+                                        precioFinal = nonNullCorte.precioDefecto
+                                    )
+                                    corteBarberoViewModel.createCortesBarbero(cortebarbero)
+                                }
+                            }
+                }
+            },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Green, // Fondo del botón
+                    contentColor = MaterialTheme.colorScheme.background // Color del texto
+                )
+            ) {
+                Text(text = "Comenzar")
+            }
+            }
         }
     }
 }
@@ -218,11 +272,11 @@ fun SettingsNavBar() {
 //@Preview(showSystemUi = true)
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun HomeScreenPreview(barberoViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
+fun HomeScreenPreview(barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel, corteBarberoViewModel: CorteBarberoViewModel) {
     Scaffold(
         modifier = Modifier.background(Color.Black),
         bottomBar = {
-            SettingsNavBar() // Coloca la barra de navegación en la parte inferior
+            SettingsNavBar(barberViewModel, corteViewModel, corteBarberoViewModel) // Coloca la barra de navegación en la parte inferior
         },
         content = { innerPadding ->
             // Aquí va el contenido principal de la pantalla
@@ -231,7 +285,7 @@ fun HomeScreenPreview(barberoViewModel: BarberoViewModel, corteViewModel: Cortes
                     .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background)
             ) {
-                PreviewComponents(barberoViewModel, corteViewModel)
+                PreviewComponents(barberViewModel, corteViewModel)
             }
         }
     )

@@ -77,6 +77,8 @@ dependencies {
     // Otras dependencias
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1") // Para ViewModel con Compose
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1") // Para soporte de coroutines
+    //para la fecha actual
+    implementation ("com.jakewharton.threetenabp:threetenabp:1.3.1")
     //dependencias agregadas FIN
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

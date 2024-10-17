@@ -20,6 +20,15 @@ class CortesViewModel : ViewModel() {
     private val _selectedCorte = MutableStateFlow<Corte?>(null)
     val selectedCorte: StateFlow<Corte?> = _selectedCorte
 
+    // Estado para almacenar el booleano de corte  seleccionado
+    private val _corteScreenOn = MutableStateFlow<Boolean?>(false)
+    val corteScreenOn: StateFlow<Boolean?> = _corteScreenOn
+
+    //Setear el bool
+    fun setCorteScreenOn(value: Boolean) {
+        _corteScreenOn.value = value
+    }
+
     // Función para cargar los cortes
     fun loadCortes() {
         Log.d("CorteViewModel", "Cargando Cortes...")

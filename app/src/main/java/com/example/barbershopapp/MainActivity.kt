@@ -18,17 +18,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.barbershopapp.ui.theme.BarberShopAppTheme
 import com.example.barbershopapp.viewmodel.BarberoViewModel
+import com.example.barbershopapp.viewmodel.CorteBarberoViewModel
 import com.example.barbershopapp.viewmodel.CortesViewModel
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BarberShopAppTheme {
+                AndroidThreeTen.init(this)
                 // Crear el ViewModel en la actividad
                 val barberoViewModel: BarberoViewModel = viewModel()
                 val corteViewModel: CortesViewModel = viewModel()
-                HomeScreenPreview(barberoViewModel,corteViewModel)
+                val corteBarberoViewModel: CorteBarberoViewModel = viewModel()
+                HomeScreenPreview(barberoViewModel,corteViewModel, corteBarberoViewModel)
             }
         }
     }
