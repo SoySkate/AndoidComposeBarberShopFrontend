@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
-
 
 class CorteBarberoViewModel : ViewModel() {
     //getAll
@@ -35,6 +33,9 @@ class CorteBarberoViewModel : ViewModel() {
     private val _cortesBarberoMes = MutableStateFlow<List<CorteBarbero>>(emptyList())
     val cortesBarberoMes: StateFlow<List<CorteBarbero>> = _cortesBarberoMes
 
+    // Estado para almacenar la lista de cortes
+    private val _cortes = MutableStateFlow<List<CorteBarbero>>(emptyList())
+    val cortes: StateFlow<List<CorteBarbero>> = _cortes
 
     // Estado para almacenar el barbero seleccionado
     private val _selectedCortesBarbero = MutableStateFlow<CorteBarbero?>(null)
@@ -56,7 +57,6 @@ class CorteBarberoViewModel : ViewModel() {
         }
     }
 
-
     // Función para cargar los cortesBarbero
     fun loadCortesByBarbero(selectedIdBarbero: Barbero) {
         Log.d("CortesBarberoViewModel", "Cargando cortesBarbero...")
@@ -73,54 +73,7 @@ class CorteBarberoViewModel : ViewModel() {
             }
         }
     }
-    //Funcion para getcortes Barbero dia
-    fun loadCortesByBarberoDia(selectedIdBarberoDia: Barbero, dia:String) {
-        Log.d("CortesBarberoViewModel", "Cargando cortesBarbero...")
-        viewModelScope.launch {
-            try {
-                // Llama a la API para obtener la lista de cortesBarbero
-                var idBarbero = selectedIdBarberoDia.idbarbero
-                val cortesBarberosDiaList = RetrofitInstance.corteBarberoApi.getCortesByBarberoAndDay(idBarbero, dia)
-                _cortesBarberoDia.value = cortesBarberosDiaList // Actualiza el estado
-                Log.d("CortesBarberoViewModel", "¡Todo salió bien EN VIEWMODEL!");
-                Log.d("CortesBarberoViewModel", "cortesBarbero cargados: ${_cortesBarberoDia.value.size}")
-            } catch (e: Exception) {
-                Log.e("CortesBarberoViewModel", "Error al cargar cortesBarberoDIA: ${e.message}")
-            }
-        }
-    }
-    //Funcion para getcortes Barbero semana
-    fun loadCortesByBarberoSemana(selectedIdBarberoSemana: Barbero, inicio:String, fin:String) {
-        Log.d("CortesBarberoViewModel", "Cargando cortesBarbero...")
-        viewModelScope.launch {
-            try {
-                // Llama a la API para obtener la lista de cortesBarbero
-                var idBarbero = selectedIdBarberoSemana.idbarbero
-                val cortesBarberosSemanaList = RetrofitInstance.corteBarberoApi.getCortesByBarberoAndWeek(idBarbero, inicio, fin)
-                _cortesBarberoSemana.value = cortesBarberosSemanaList // Actualiza el estado
-                Log.d("CortesBarberoViewModel", "¡Todo salió bien EN VIEWMODEL!");
-                Log.d("CortesBarberoViewModel", "cortesBarbero cargados: ${_cortesBarberoSemana.value.size}")
-            } catch (e: Exception) {
-                Log.e("CortesBarberoViewModel", "Error al cargar cortesBarberoSemana: ${e.message}")
-            }
-        }
-    }
-    //Funcion para getcortes Barbero mes
-    fun loadCortesByBarberoMes(selectedIdBarberoMes: Barbero, mes:Int, anio:Int) {
-        Log.d("CortesBarberoViewModel", "Cargando cortesBarbero...")
-        viewModelScope.launch {
-            try {
-                // Llama a la API para obtener la lista de cortesBarbero
-                var idBarbero = selectedIdBarberoMes.idbarbero
-                val cortesBarberosMesList = RetrofitInstance.corteBarberoApi.getCortesByBarberoAndMonth(idBarbero, mes, anio)
-                _cortesBarberoMes.value = cortesBarberosMesList // Actualiza el estado
-                Log.d("CortesBarberoViewModel", "¡Todo salió bien EN VIEWMODEL!");
-                Log.d("CortesBarberoViewModel", "cortesBarbero cargados: ${_cortesBarberoSemana.value.size}")
-            } catch (e: Exception) {
-                Log.e("CortesBarberoViewModel", "Error al cargar cortesBarberoMes: ${e.message}")
-            }
-        }
-    }
+
     //funcion para crear cortesBarbero
     fun createCortesBarbero(corteBarbero: CorteBarbero){
         Log.d("CortesBarberoViewModel", "CREANDO cortesBarbero...")
@@ -150,6 +103,42 @@ class CorteBarberoViewModel : ViewModel() {
 
             }catch (e: Exception) {
                 Log.e("CorteBarberoViewModel", "Error al actualizar corteBarbero ${e.message}")
+            }
+        }
+    }
+
+    // Cargar los cortes diarios
+    fun loadCortesDiarios(idBarbero: Int, fecha: String) {
+        viewModelScope.launch {
+            try {
+                val cortesDiarios = RetrofitInstance.corteBarberoApi.getCortesByBarberoAndDay(idBarbero, fecha)
+                _cortes.value = cortesDiarios
+            } catch (e: Exception) {
+                Log.e("CorteBarberoViewModel", "Error al cargar cortes diarios: ${e.message}")
+            }
+        }
+    }
+
+    // Cargar los cortes semanales
+    fun loadCortesSemanales(idBarbero: Int, inicio: String, fin: String) {
+        viewModelScope.launch {
+            try {
+                val cortesSemanales = RetrofitInstance.corteBarberoApi.getCortesByBarberoAndWeek(idBarbero, inicio, fin)
+                _cortes.value = cortesSemanales
+            } catch (e: Exception) {
+                Log.e("CorteBarberoViewModel", "Error al cargar cortes semanales: ${e.message}")
+            }
+        }
+    }
+
+    // Cargar los cortes mensuales
+    fun loadCortesMensuales(idBarbero: Int, mes: Int, anio: Int) {
+        viewModelScope.launch {
+            try {
+                val cortesMensuales = RetrofitInstance.corteBarberoApi.getCortesByBarberoAndMonth(idBarbero, mes, anio)
+                _cortes.value = cortesMensuales
+            } catch (e: Exception) {
+                Log.e("CorteBarberoViewModel", "Error al cargar cortes mensuales: ${e.message}")
             }
         }
     }
