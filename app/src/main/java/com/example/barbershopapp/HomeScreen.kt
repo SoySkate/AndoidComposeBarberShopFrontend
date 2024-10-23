@@ -1,20 +1,10 @@
 package com.example.barbershopapp
-import android.content.res.Configuration
-import android.os.Bundle
-import android.os.Message
+
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Center
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,45 +16,39 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.barbershopapp.ui.theme.BarberShopAppTheme
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.barbershopapp.newtwork.Barbero
-import com.example.barbershopapp.newtwork.Corte
 import com.example.barbershopapp.newtwork.CorteBarbero
 import com.example.barbershopapp.viewmodel.BarberoViewModel
 import com.example.barbershopapp.viewmodel.CorteBarberoViewModel
 import com.example.barbershopapp.viewmodel.CortesViewModel
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import java.time.LocalDate
 
 data class Business(val businessName: String, val businessOwner: String)
-//data class Cortes(val name: String, val price: String)
-private val negocio = Business("Barberia","Tio JuanC")
+
+private val negocio = Business("BarberShop","Pratos")
 
 
 @Composable
 fun Navigation(barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
     val navController = rememberNavController() // Crear un NavController
+    val lifecycleOwner = LocalLifecycleOwner.current // Obtener el LifecycleOwner
+
     NavHost(navController = navController, startDestination = "home") {
         composable("cortes") { CortesScreenPreview(corteViewModel) } //pantalla cortes
         composable("home") {
             corteViewModel.setCorteScreenOn(false)
             PreviewButtons(navController) } //pantalla home") { CortesScreenPreview() } //pantalla cortes
         composable("barberos") { BarberScreenPreview(barberViewModel)  } // Pantalla de barberos
+        composable("resumenes") { ResumenesScreen(context = LocalContext.current, lifecycleOwner = lifecycleOwner) } //Pantalla resumenes
     }
 }
 
@@ -81,6 +65,7 @@ fun HomeImg() {
             .size(80.dp)
     )
 }
+
 @Composable
 fun MyText(text:String, color: Color, style: TextStyle){
     Text(text,color = color, style = style)
@@ -97,9 +82,8 @@ fun MySideTexts(business: Business, barberViewModel: BarberoViewModel) {
     }
 }
 
-
 @Composable
-fun MyComponent(business: Business,barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
+fun MyComponent(business: Business,barberViewModel: BarberoViewModel) {
     // Layout para representación de filas, centrado
     Row(
         modifier = Modifier
@@ -115,7 +99,6 @@ fun MyComponent(business: Business,barberViewModel: BarberoViewModel, corteViewM
     }
 }
 
-
 @Composable
 fun PreviewComponents(barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel) {
     BarberShopAppTheme {
@@ -128,13 +111,12 @@ fun PreviewComponents(barberViewModel: BarberoViewModel, corteViewModel: CortesV
             //.verticalScroll(scrollState)
                 ){
             Spacer(Modifier.height(10.dp))
-            MyComponent(negocio,barberViewModel,corteViewModel)
+            MyComponent(negocio,barberViewModel)
             Navigation(barberViewModel, corteViewModel)
         }
 
     }
 }
-
 
 @Composable
 fun PreviewButtons(navController: NavController) {
@@ -182,7 +164,7 @@ fun PreviewButtons(navController: NavController) {
             Spacer(Modifier.height(10.dp))
 
             Button(
-                onClick = { /* Acción al hacer clic en el botón */ },
+                onClick = { navController.navigate("resumenes") },
                 modifier = Modifier
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -197,6 +179,7 @@ fun PreviewButtons(navController: NavController) {
         }
     }
 }
+
 @Composable
 fun SettingsNavBar(barberViewModel: BarberoViewModel, corteViewModel: CortesViewModel, corteBarberoViewModel: CorteBarberoViewModel) {
 
@@ -223,19 +206,9 @@ fun SettingsNavBar(barberViewModel: BarberoViewModel, corteViewModel: CortesView
             //esto es para hacerlo bool asi cuando este dentro la screen cortes list se abra
             TextButton(onClick = {
               // var existBarberAndCorte by remember { mutableStateOf(false) }
-                var corte = corteViewModel.selectedCorte.value
+                val corte = corteViewModel.selectedCorte.value
                 var precioFinal = corte?.precioDefecto
-                var barbero = barberViewModel.selectedBarbero.value
-
-//                if(barbero != null && corte!=null){
-//                    Log.d("CortesBarberoViewModel", "EXISTEN barberos y cortes en el viewModel")
-//                    existBarberAndCorte = true
-//                }else{
-//                    Log.d("CortesBarberoViewModel", "no existen los abrberos ni os cortes ene l viewmodel selected")
-//                    Log.d("CortesBarberoViewModel", "BARBER SLECTED: ${barberViewModel.selectedBarbero}")
-//                    Log.d("CortesBarberoViewModel", "CORTE SELECTED: ${corteViewModel.selectedCorte}")
-//                    existBarberAndCorte=false
-//                }
+                val barbero = barberViewModel.selectedBarbero.value
 
                 Log.d("CortesBarberoViewModel", "Tocando bototn de COMENZAR")
                 Log.d("CortesBarberoViewModel", "Valor de barbero: $barbero")
@@ -243,13 +216,14 @@ fun SettingsNavBar(barberViewModel: BarberoViewModel, corteViewModel: CortesView
 
                 if(corte!=null && barbero!=null){
                     Log.d("CortesBarberoViewModel", "DENTRO condicional botoncomenzar")
-//                     // Verificar que corte y barbero no sean nulos antes de crear CorteBarbero
+                     // Verificar que corte y barbero no sean nulos antes de crear CorteBarbero
                             corte?.let { nonNullCorte ->
                                 barbero?.let { nonNullBarbero ->
                                     val cortebarbero = CorteBarbero(
                                         idcortebarbero = 0,
                                         corte = nonNullCorte,
                                         barbero = nonNullBarbero,
+                                        fechaCorte = LocalDate.now().toString(),
                                         precioFinal = nonNullCorte.precioDefecto
                                     )
                                     corteBarberoViewModel.createCortesBarbero(cortebarbero)
