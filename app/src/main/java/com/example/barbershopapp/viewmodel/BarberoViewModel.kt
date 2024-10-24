@@ -35,13 +35,18 @@ class BarberoViewModel : ViewModel() {
             }
         }
     }
-
+    //null selectedbarber fun
+    fun selectedBarberoNull(){
+        _selectedBarbero.value = null
+    }
     //funcion para crear Barbero
     fun createBarbero(barberoNombre: String){
         viewModelScope.launch {
         try{
             val newBarbero = Barbero(0, barberoNombre)
             val createdBarbero = RetrofitInstance.barberoApi.createBarbero(newBarbero)
+            //Esto no me sirve para actualizar la lista de barberos nose porque despues de crear uno
+            //_barberos.value = _barberos.value + createdBarbero // Añadir el nuevo barbero a la lista existente
             Log.d("BarberoViewModel", "Barbero creado: $createdBarbero")
 
         }catch (e: Exception) {
