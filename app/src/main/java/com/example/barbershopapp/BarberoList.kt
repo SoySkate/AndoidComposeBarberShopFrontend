@@ -65,6 +65,9 @@ fun PreviewBarberComponents(barberViewModel: BarberoViewModel) {
     //var para hacer udatebarbero selected
     var updateBarbero by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        barberViewModel.loadBarberos()
+    }
     // Pasar la lista de barberos a la función que crea tu UI
     if (barberos.isEmpty()) {
         Text("No hay barberos disponibles.")
@@ -179,27 +182,62 @@ fun PreviewBarberComponents(barberViewModel: BarberoViewModel) {
 @Composable
 fun BarberListPreview(barberViewModel: BarberoViewModel) {
     var showBarberComponents by remember { mutableStateOf(true) }
-
+    var barberoNombre by remember { mutableStateOf("") }
+    var showForm by remember { mutableStateOf(false) }
     Column {
-
-//        Button(
-//            onClick = {
-//                showBarberComponents = true // Actualizar el estado para mostrar PreviewBarberComponents
-//            },
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            colors = ButtonDefaults.buttonColors(
-//                containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
-//                contentColor = MaterialTheme.colorScheme.background // Color del texto
-//            ),
-//            shape = RoundedCornerShape(30.dp), // Bordes redondeados
-//            elevation = ButtonDefaults.buttonElevation(8.dp) // Elevación para sombra
-//        ) {
-//            Text(text = "Show Barberos List")
-//        }
 
         // Mostrar PreviewBarberComponents si showBarberComponents es true
         if (showBarberComponents) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Toggle switch para mostrar/ocultar el formulario
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Añadir nuevo barbero")
+                    Switch(
+                        checked = showForm,
+                        onCheckedChange = { showForm = it }
+                    )
+                }
+
+                // Mostrar formulario si showForm es true
+                if (showForm) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // Campo de entrada para el nombre del barbero
+                        TextField(
+                            value = barberoNombre,
+                            onValueChange = { barberoNombre = it },
+                            label = { Text("Nombre del barbero") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Botón para enviar el formulario
+                        Button(
+                            onClick = {
+                                // Aquí puedes agregar la lógica para crear un nuevo barbero
+                                // Por ejemplo, llamar a una función del ViewModel para enviar los datos
+                                if (barberoNombre.isNotEmpty()) {
+                                    // Simulación de la creación del barbero
+                                    barberViewModel.createBarbero(barberoNombre)
+                                    println("Nuevo barbero creado: $barberoNombre")
+                                    // Luego de la creación, limpiar el campo de entrada
+                                    barberoNombre = ""
+                                    // Recargar barberos
+                                    barberViewModel.loadBarberos()
+                                    // Cerrar el formulario
+                                    showForm = false
+
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = barberoNombre.isNotEmpty() // Habilitar solo si el nombre no está vacío
+                        ) {
+                            Text(text = "Crear Barbero")
+                        }
+                    }
+                }
+            }
             PreviewBarberComponents(barberViewModel)
         }
     }
@@ -207,7 +245,6 @@ fun BarberListPreview(barberViewModel: BarberoViewModel) {
 @Composable
 fun BarberScreenPreview(barberViewModel: BarberoViewModel){
     Column(){
-        BarberScreenWithFormPreview()
         Spacer(modifier = Modifier.height(6.dp))
         BarberListPreview(barberViewModel)
     }
@@ -259,66 +296,6 @@ fun UpdateBarber(barbero: Barbero, barberViewModel: BarberoViewModel){
     }
 }
 
-//to create new barber
-@Composable
-fun BarberScreenWithForm() {
-    var showForm by remember { mutableStateOf(false) }
-    var barberoNombre by remember { mutableStateOf("") }
-    val barberoViewModel: BarberoViewModel = viewModel()
 
-    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        // Toggle switch para mostrar/ocultar el formulario
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "Añadir nuevo barbero")
-            Switch(
-                checked = showForm,
-                onCheckedChange = { showForm = it }
-            )
-        }
-
-        // Mostrar formulario si showForm es true
-        if (showForm) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                // Campo de entrada para el nombre del barbero
-                TextField(
-                    value = barberoNombre,
-                    onValueChange = { barberoNombre = it },
-                    label = { Text("Nombre del barbero") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Botón para enviar el formulario
-                Button(
-                    onClick = {
-                        // Aquí puedes agregar la lógica para crear un nuevo barbero
-                        // Por ejemplo, llamar a una función del ViewModel para enviar los datos
-                        if (barberoNombre.isNotEmpty()) {
-                            // Simulación de la creación del barbero
-                            barberoViewModel.createBarbero(barberoNombre)
-                            println("Nuevo barbero creado: $barberoNombre")
-                            // Luego de la creación, limpiar el campo de entrada
-                            barberoNombre = ""
-                            // Cerrar el formulario
-                            showForm = false
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = barberoNombre.isNotEmpty() // Habilitar solo si el nombre no está vacío
-                ) {
-                    Text(text = "Crear Barbero")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-@Preview
-fun BarberScreenWithFormPreview() {
-    BarberScreenWithForm()
-}
 
 

@@ -46,7 +46,8 @@ class BarberoViewModel : ViewModel() {
             val newBarbero = Barbero(0, barberoNombre)
             val createdBarbero = RetrofitInstance.barberoApi.createBarbero(newBarbero)
             //Esto no me sirve para actualizar la lista de barberos nose porque despues de crear uno
-            //_barberos.value = _barberos.value + createdBarbero // Añadir el nuevo barbero a la lista existente
+            //_barberos.value = _barberos.value + newBarbero // Añadir el nuevo barbero a la lista existente
+            loadBarberos()
             Log.d("BarberoViewModel", "Barbero creado: $createdBarbero")
 
         }catch (e: Exception) {
@@ -62,6 +63,7 @@ class BarberoViewModel : ViewModel() {
             try{
                 RetrofitInstance.barberoApi.deleteBarbero(barbero.idbarbero)
                 Log.d("BarberoViewModel", "Deleting Barbero")
+                loadBarberos()
 
                 }catch (e: Exception) {
                 Log.e("BarberoViewModel", "Error al eliminar barbero: ${e.message}")
@@ -75,6 +77,7 @@ class BarberoViewModel : ViewModel() {
                 val requestBody =barbero.barberoNombre.toRequestBody("text/plain".toMediaType())
                 RetrofitInstance.barberoApi.updateBarbero(barbero.idbarbero, requestBody)
                 Log.d("BarberoViewModel", "Barbero Actualizado: $barbero")
+                loadBarberos()
 
             }catch (e: Exception) {
                 Log.e("BarberoViewModel", "Error al actualizar barbero ${e.message}")
