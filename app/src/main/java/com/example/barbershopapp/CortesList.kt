@@ -69,7 +69,64 @@ fun PreviewCorteComponents(corteViewModel: CortesViewModel) {
                     precioDefecto = selectedCorte?.precioDefecto ?: 0.00,
                     idcorte = selectedCorte?.idcorte ?: 0
                 )
-                UpdateCorte(editCorte, corteViewModel)
+                var corteNombre by remember { mutableStateOf(editCorte.corteNombre) }
+                var precioDefecto by remember { mutableStateOf(editCorte.precioDefecto) }
+                //val cortesViewModel: CortesViewModel = viewModel()
+
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+                    // Mostrar formulario si showForm es true
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // Campo de entrada para el nombre del corte
+                        TextField(
+                            value = corteNombre,
+                            onValueChange = { corteNombre = it },
+                            label = { Text("Nombre del Corte") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        // Campo de entrada para el precio del corte
+                        //Seguramente hay que ponerlo de otra forma
+                        TextField(
+                            value = precioDefecto.toString(),
+                            onValueChange = { newText ->
+                                // Intentar convertir el nuevo texto a Double
+                                val newPrecio = try {
+                                    newText.toDouble()
+                                } catch (e: NumberFormatException) {
+                                    // Si ocurre un error, no actualizar el estado
+                                    precioDefecto
+                                }
+                                precioDefecto = newPrecio},
+                            label = { Text("Precio del Corte") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Botón para enviar el formulario
+                        Button(
+                            onClick = {
+                                // Aquí puedes agregar la lógica para editar un corte
+                                // Por ejemplo, llamar a una función del ViewModel para enviar los datos
+                                if (corteNombre.isNotEmpty() && precioDefecto!=0.00) {
+                                    //Actualizacion del corte
+                                    editCorte.corteNombre = corteNombre
+                                    editCorte.precioDefecto = precioDefecto
+                                    corteViewModel.updateCorteNombre(editCorte)
+                                    corteViewModel.updateCortePrecio(editCorte)
+                                    println("Corte Actualizado: $corteNombre")
+                                    // Luego de la creación, limpiar el campo de entrada
+                                    corteNombre = ""
+                                    precioDefecto = 0.00
+                                }
+//                                updateCorte=false
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = corteNombre.isNotEmpty() && precioDefecto!=0.00 // Habilitar solo si el nombre no está vacío
+                        ) {
+                            Text(text = "Actualizar Corte")
+                        }
+
+                    }
+                }
                 Button(
                     onClick = {
                         updateCorte=false
@@ -111,7 +168,7 @@ fun PreviewCorteComponents(corteViewModel: CortesViewModel) {
 
                         // Mostrar el nombre del corte
                         Text(
-                            text = corte.corteNombre+"-->  "+corte.precioDefecto.toString(),
+                            text = corte.corteNombre+" ---> "+corte.precioDefecto.toString() + "€",
                             modifier = Modifier
                                 .weight(1f) // Hacer que el Text ocupe el espacio sobrante
                                 .padding(end = 8.dp)
@@ -160,187 +217,97 @@ fun PreviewCorteComponents(corteViewModel: CortesViewModel) {
     }
 }
 
-
-//to update corte
-@Composable
-fun UpdateCorte(corte: Corte, corteViewModel: CortesViewModel){
-    var corteNombre by remember { mutableStateOf(corte.corteNombre) }
-    var precioDefecto by remember { mutableStateOf(corte.precioDefecto) }
-    //val cortesViewModel: CortesViewModel = viewModel()
-
-    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-
-        // Mostrar formulario si showForm es true
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            // Campo de entrada para el nombre del corte
-            TextField(
-                value = corteNombre,
-                onValueChange = { corteNombre = it },
-                label = { Text("Nombre del Corte") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            // Campo de entrada para el precio del corte
-            //Seguramente hay que ponerlo de otra forma
-            TextField(
-                value = precioDefecto.toString(),
-                onValueChange = { newText ->
-                    // Intentar convertir el nuevo texto a Double
-                    val newPrecio = try {
-                        newText.toDouble()
-                    } catch (e: NumberFormatException) {
-                        // Si ocurre un error, no actualizar el estado
-                        precioDefecto
-                    }
-                    precioDefecto = newPrecio},
-                label = { Text("Precio del Corte") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            // Botón para enviar el formulario
-            Button(
-                onClick = {
-                    // Aquí puedes agregar la lógica para editar un corte
-                    // Por ejemplo, llamar a una función del ViewModel para enviar los datos
-                    if (corteNombre.isNotEmpty() && precioDefecto!=0.0) {
-                        //Actualizacion del corte
-                        corte.corteNombre = corteNombre
-                        corte.precioDefecto = precioDefecto
-                        corteViewModel.updateCorteNombre(corte)
-                        corteViewModel.updateCortePrecio(corte)
-                        println("Corte Actualizado: $corteNombre")
-                        // Luego de la creación, limpiar el campo de entrada
-                        corteNombre = ""
-                        precioDefecto = 0.00
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = corteNombre.isNotEmpty() && precioDefecto!=0.00 // Habilitar solo si el nombre no está vacío
-            ) {
-                Text(text = "Actualizar Corte")
-            }
-
-        }
-    }
-}
-
 //@Preview(showSystemUi = true)
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CorteListPreview(corteViewModel: CortesViewModel) {
-    var showCorteComponents by remember { mutableStateOf(false) }
+    var showCorteComponents by remember { mutableStateOf(true) }
+    var showForm by remember { mutableStateOf(false) }
+    var corteNombre by remember { mutableStateOf("") }
+    var precioDefecto by remember { mutableStateOf(0.00) }
 
     Column {
-
-        Button(
-            onClick = {
-                showCorteComponents = true // Actualizar el estado para mostrar PreviewCorteComponents
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
-                contentColor = MaterialTheme.colorScheme.background // Color del texto
-            ),
-            shape = RoundedCornerShape(30.dp), // Bordes redondeados
-            elevation = ButtonDefaults.buttonElevation(8.dp) // Elevación para sombra
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "Show Cortes List")
-        }
+            // Toggle switch para mostrar/ocultar el formulario
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Añadir nuevo corte")
+                Switch(
+                    checked = showForm,
+                    onCheckedChange = { showForm = it }
+                )
+            }
 
+            // Mostrar formulario si showForm es true
+            if (showForm) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    // Campo de entrada para el nombre del corte
+                    TextField(
+                        value = corteNombre,
+                        onValueChange = { corteNombre = it },
+                        label = { Text("Nombre del Corte") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    // Campo de entrada para el precio del corte
+                    //Seguramente hay que ponerlo de otra forma
+                    TextField(
+                        value = precioDefecto.toString(),
+                        onValueChange = { newText ->
+                            // Intentar convertir el nuevo texto a Double
+                            val newPrecio = try {
+                                newText.toDouble()
+                            } catch (e: NumberFormatException) {
+                                // Si ocurre un error, no actualizar el estado
+                                precioDefecto
+                            }
+                            precioDefecto = newPrecio
+                        },
+                        label = { Text("Precio del Corte") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    // Botón para enviar el formulario
+                    Button(
+                        onClick = {
+                            // Aquí puedes agregar la lógica para crear un nuevo corte
+                            // Por ejemplo, llamar a una función del ViewModel para enviar los datos
+                            if (corteNombre.isNotEmpty() && (precioDefecto != 0.00)) {
+                                // Simulación de la creación del corte
+                                corteViewModel.createCorte(corteNombre, precioDefecto)
+                                println("Nuevo corte creado: $corteNombre")
+                                // Luego de la creación, limpiar el campo de entrada
+                                corteNombre = ""
+                                // Cerrar el formulario
+                                showForm = false
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = (corteNombre.isNotEmpty() && (precioDefecto != 0.00)) // Habilitar solo si el nombre y el precio no está vacío
+                    ) {
+                        Text(text = "Crear Corte")
+                    }
+                }
+            }
+        }
         // Mostrar PreviewCorteComponents si showCorteComponents es true
         if (showCorteComponents) {
             PreviewCorteComponents(corteViewModel)
         }
     }
-}
 
-//to create new corte
-@Composable
-fun CorteScreenWithForm(corteViewModel: CortesViewModel) {
-    var showForm by remember { mutableStateOf(false) }
-    var corteNombre by remember { mutableStateOf("") }
-    var precioDefecto by remember { mutableStateOf(0.00 ) }
-    //val corteViewModel: CortesViewModel = viewModel()
-
-    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        // Toggle switch para mostrar/ocultar el formulario
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "Añadir nuevo corte")
-            Switch(
-                checked = showForm,
-                onCheckedChange = { showForm = it }
-            )
-        }
-
-        // Mostrar formulario si showForm es true
-        if (showForm) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                // Campo de entrada para el nombre del corte
-                TextField(
-                    value = corteNombre,
-                    onValueChange = { corteNombre = it },
-                    label = { Text("Nombre del Corte") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                // Campo de entrada para el precio del corte
-                //Seguramente hay que ponerlo de otra forma
-                TextField(
-                    value = precioDefecto.toString(),
-                    onValueChange = { newText ->
-                        // Intentar convertir el nuevo texto a Double
-                        val newPrecio = try {
-                            newText.toDouble()
-                        } catch (e: NumberFormatException) {
-                            // Si ocurre un error, no actualizar el estado
-                            precioDefecto
-                        }
-                        precioDefecto = newPrecio},
-                    label = { Text("Precio del Corte") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Botón para enviar el formulario
-                Button(
-                    onClick = {
-                        // Aquí puedes agregar la lógica para crear un nuevo corte
-                        // Por ejemplo, llamar a una función del ViewModel para enviar los datos
-                        if (corteNombre.isNotEmpty() && (precioDefecto != 0.00)) {
-                            // Simulación de la creación del corte
-                            corteViewModel.createCorte(corteNombre,precioDefecto)
-                            println("Nuevo corte creado: $corteNombre")
-                            // Luego de la creación, limpiar el campo de entrada
-                            corteNombre = ""
-                            // Cerrar el formulario
-                            showForm = false
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = (corteNombre.isNotEmpty() && (precioDefecto != 0.00)) // Habilitar solo si el nombre y el precio no está vacío
-                ) {
-                    Text(text = "Crear Corte")
-                }
-            }
-        }
-    }
 }
 
 @Composable
 fun CortesScreenPreview(corteViewModel: CortesViewModel){
     corteViewModel.setCorteScreenOn(true)
     Column(){
-        CorteScreenWithFormPreview(corteViewModel)
         Spacer(modifier = Modifier.height(6.dp))
         CorteListPreview(corteViewModel)
     }
-
 }
 
-
-//@Preview
-@Composable
-fun CorteScreenWithFormPreview(corteViewModel: CortesViewModel) {
-   CorteScreenWithForm(corteViewModel)
-}

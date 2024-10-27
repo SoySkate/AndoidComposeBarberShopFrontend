@@ -52,6 +52,7 @@ class CortesViewModel : ViewModel() {
                 val newCorte = Corte(0, corteNombre,precioDefault)
                 val createdBarbero = RetrofitInstance.corteApi.createCorte(newCorte)
                 Log.d("CorteViewModel", "Corte creado: $createdBarbero")
+                loadCortes()
 
             }catch (e: Exception) {
                 Log.e("CorteViewModel", "Error al cargar Cortes: ${e.message}")
@@ -66,6 +67,7 @@ class CortesViewModel : ViewModel() {
             try{
                 RetrofitInstance.corteApi.deleteCorte(corte.idcorte)
                 Log.d("BarberoViewModel", "Deleting Barbero")
+                loadCortes()
 
             }catch (e: Exception) {
                 Log.e("BarberoViewModel", "Error al eliminar barbero: ${e.message}")
@@ -79,6 +81,7 @@ class CortesViewModel : ViewModel() {
                // val requestBody =barbero.barberoNombre.toRequestBody("text/plain".toMediaType())
                 RetrofitInstance.corteApi.updateCortePrecio(corte.idcorte, corte.precioDefecto)
                 Log.d("BarberoViewModel", "Barbero Actualizado: $corte")
+                loadCortes()
 
             }catch (e: Exception) {
                 Log.e("BarberoViewModel", "Error al actualizar barbero ${e.message}")

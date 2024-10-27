@@ -5,7 +5,21 @@ es el currentbarber y simplemente empieze a listar cortes?
 -BarberloList.kt line -71-73 estic fent algo malamente pero funciona pero sale rojo
 
 -Cuando se selecciona un barbero ir al CorteScreen o ir al HomeScreen? Y un corte ir al homeScreen
+-Mirar el navegador no esta bie hecho ya que no puedo anvegar comodamenete por la app o como?
 -I el precio no es un buen decimal xdMH
+-Cuando creas un barbero no se actualiza el front
+-Cuando se edita el nombre barbero ya queda actualizado bien excepto arriba el nombre rojo se mantiene al aterior
+sino se cambia de barbero y se reselecciona XD Hay algo que no hago bien en el actualizar el nombre ROJO de barber
+
+
+
+
+
+
+
+
+
+
 
 
 DONE:
