@@ -80,9 +80,6 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
     var mes by remember { mutableStateOf("") }
     var anio by remember { mutableStateOf("") }
 
-    val date = LocalDate.of(2024, 10, 13)
-    val fecha111 = date.toString()
-
     fun resetFields() {
         idBarbero = ""
         fecha = ""

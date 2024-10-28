@@ -121,7 +121,8 @@ fun generatePdfResumen(
     pdfDocument.finishPage(page)
 
     // Guardar el PDF en el almacenamiento
-    val directory = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+    //val directory = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+    val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
     val file = File(directory, "$nombreArchivo.pdf")
 
     try {

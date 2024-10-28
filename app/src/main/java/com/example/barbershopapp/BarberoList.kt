@@ -1,5 +1,6 @@
 package com.example.barbershopapp
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import com.example.barbershopapp.viewmodel.CortesViewModel
 import kotlinx.coroutines.delay
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun PreviewBarberComponents(barberViewModel: BarberoViewModel) {
     //val barberoViewModel: BarberoViewModel = viewModel()
