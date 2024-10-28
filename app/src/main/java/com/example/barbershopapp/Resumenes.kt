@@ -3,9 +3,18 @@ package com.example.barbershopapp
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +25,8 @@ import com.example.barbershopapp.viewmodel.CorteBarberoViewModel
 import org.threeten.bp.LocalDate
 import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 /*@RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -81,28 +92,67 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
         anio = ""
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        Spacer(Modifier.height(100.dp))
+
         // Botón para generar resumen diario
         Button(onClick = {
             resumenType = "Diario"
             showDialog = true
-        }) {
+        },
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
+                contentColor = MaterialTheme.colorScheme.background // Color del texto
+            ),
+            shape = RoundedCornerShape(30.dp),
+            elevation = ButtonDefaults.buttonElevation(8.dp)
+        ) {
             Text("Generar Resumen Diario")
         }
+
+        Spacer(Modifier.height(10.dp))
 
         // Botón para generar resumen semanal
         Button(onClick = {
             resumenType = "Semanal"
             showDialog = true
-        }) {
+        },
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
+                contentColor = MaterialTheme.colorScheme.background // Color del texto
+            ),
+            shape = RoundedCornerShape(30.dp),
+            elevation = ButtonDefaults.buttonElevation(8.dp)
+        ) {
             Text("Generar Resumen Semanal")
         }
+
+        Spacer(Modifier.height(10.dp))
 
         // Botón para generar resumen mensual
         Button(onClick = {
             resumenType = "Mensual"
             showDialog = true
-        }) {
+        },
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
+                contentColor = MaterialTheme.colorScheme.background // Color del texto
+            ),
+            shape = RoundedCornerShape(30.dp),
+            elevation = ButtonDefaults.buttonElevation(8.dp)
+        ) {
             Text("Generar Resumen Mensual")
         }
 
