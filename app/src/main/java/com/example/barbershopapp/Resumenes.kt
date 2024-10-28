@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +28,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.barbershopapp.newtwork.Barbero
+import com.example.barbershopapp.viewmodel.BarberoViewModel
 
 /*@RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -65,23 +68,38 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
     }
 }*/
 
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
     val corteBarberoViewModel: CorteBarberoViewModel = viewModel()
+    val barberViewModel: BarberoViewModel = viewModel()
 
     var showDialog by remember { mutableStateOf(false) }
     var resumenType by remember { mutableStateOf("") }
-
-    var idBarbero by remember { mutableStateOf("") }
+    var selectedBarbero by remember { mutableStateOf<Barbero?>(null) }
+    var expanded by remember { mutableStateOf(false) }  // Control de expansión del menú
     var fecha by remember { mutableStateOf("") }
     var fechaInicio by remember { mutableStateOf("") }
     var fechaFin by remember { mutableStateOf("") }
     var mes by remember { mutableStateOf("") }
     var anio by remember { mutableStateOf("") }
 
+    // Cargar los barberos al iniciar el Composable
+    LaunchedEffect(Unit) {
+        barberViewModel.loadBarberos()
+    }
+
+    val barberos by barberViewModel.barberos.collectAsState(initial = emptyList())
+
     fun resetFields() {
-        idBarbero = ""
+        selectedBarbero = null
         fecha = ""
         fechaInicio = ""
         fechaFin = ""
@@ -109,8 +127,8 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
                 containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
                 contentColor = MaterialTheme.colorScheme.background // Color del texto
             ),
-            shape = RoundedCornerShape(30.dp),
-            elevation = ButtonDefaults.buttonElevation(8.dp)
+            shape = RoundedCornerShape(30.dp), // Bordes redondeados
+            elevation = ButtonDefaults.buttonElevation(8.dp) // Elevación para sombra)
         ) {
             Text("Generar Resumen Diario")
         }
@@ -128,8 +146,8 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
                 containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
                 contentColor = MaterialTheme.colorScheme.background // Color del texto
             ),
-            shape = RoundedCornerShape(30.dp),
-            elevation = ButtonDefaults.buttonElevation(8.dp)
+            shape = RoundedCornerShape(30.dp), // Bordes redondeados
+            elevation = ButtonDefaults.buttonElevation(8.dp) // Elevación para sombra)
         ) {
             Text("Generar Resumen Semanal")
         }
@@ -147,8 +165,8 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
                 containerColor = MaterialTheme.colorScheme.onBackground, // Fondo del botón
                 contentColor = MaterialTheme.colorScheme.background // Color del texto
             ),
-            shape = RoundedCornerShape(30.dp),
-            elevation = ButtonDefaults.buttonElevation(8.dp)
+            shape = RoundedCornerShape(30.dp), // Bordes redondeados
+            elevation = ButtonDefaults.buttonElevation(8.dp) // Elevación para sombra)
         ) {
             Text("Generar Resumen Mensual")
         }
@@ -157,14 +175,43 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
-                title = { Text("Ingrese los datos para el resumen $resumenType") },
+                title = { Text("Seleccione los datos para el resumen $resumenType") },
                 text = {
                     Column {
-                        OutlinedTextField(
-                            value = idBarbero,
-                            onValueChange = { idBarbero = it },
-                            label = { Text("ID del Barbero") }
-                        )
+                        // ExposedDropdownMenuBox para seleccionar barbero
+                        ExposedDropdownMenuBox(
+                            expanded = expanded,
+                            onExpandedChange = { expanded = !expanded }
+                        ) {
+                            OutlinedTextField(
+                                value = selectedBarbero?.barberoNombre ?: "Seleccionar Barbero",
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Barbero") },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                                },
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .clickable { expanded = !expanded }
+                            )
+                            ExposedDropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                barberos.forEach { barbero ->
+                                    DropdownMenuItem(
+                                        text = { Text(text = barbero.barberoNombre) },
+                                        onClick = {
+                                            selectedBarbero = barbero
+                                            expanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        // Campos adicionales según el tipo de resumen
                         when (resumenType) {
                             "Diario" -> {
                                 OutlinedTextField(
@@ -202,52 +249,53 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
                 },
                 confirmButton = {
                     Button(onClick = {
-                        // Llamar a la función correspondiente según el tipo de resumen
-                        when (resumenType) {
-                            "Diario" -> {
-                                corteBarberoViewModel.loadCortesDiarios(
-                                    idBarbero = idBarbero.toInt(),
-                                    fecha = fecha
-                                )
-                                generatePdfFromViewModel(
-                                    context,
-                                    corteBarberoViewModel,
-                                    "Diario",
-                                    "resumen_diario_${fecha}_barbero_$idBarbero",
-                                    lifecycleOwner,
-                                    fechaInicio = LocalDate.parse(fecha)
-                                )
-                            }
-                            "Semanal" -> {
-                                corteBarberoViewModel.loadCortesSemanales(
-                                    idBarbero = idBarbero.toInt(),
-                                    inicio = fechaInicio,
-                                    fin = fechaFin
-                                )
-                                generatePdfFromViewModel(
-                                    context,
-                                    corteBarberoViewModel,
-                                    "Semanal",
-                                    "resumen_semanal_${fechaInicio}_a_${fechaFin}_barbero_$idBarbero",
-                                    lifecycleOwner,
-                                    fechaInicio = LocalDate.parse(fechaInicio),
-                                    fechaFin = LocalDate.parse(fechaFin)
-                                )
-                            }
-                            "Mensual" -> {
-                                corteBarberoViewModel.loadCortesMensuales(
-                                    idBarbero = idBarbero.toInt(),
-                                    mes = mes.toInt(),
-                                    anio = anio.toInt()
-                                )
-                                generatePdfFromViewModel(
-                                    context,
-                                    corteBarberoViewModel,
-                                    "Mensual",
-                                    "resumen_mensual_${mes}_${anio}_barbero_$idBarbero",
-                                    lifecycleOwner,
-                                    fechaInicio = LocalDate.of(anio.toInt(), mes.toInt(), 1)
-                                )
+                        selectedBarbero?.let { barbero ->
+                            when (resumenType) {
+                                "Diario" -> {
+                                    corteBarberoViewModel.loadCortesDiarios(
+                                        idBarbero = barbero.idbarbero,
+                                        fecha = fecha
+                                    )
+                                    generatePdfFromViewModel(
+                                        context,
+                                        corteBarberoViewModel,
+                                        "Diario",
+                                        "resumen_diario_${fecha}_barbero_${barbero.idbarbero}",
+                                        lifecycleOwner,
+                                        fechaInicio = LocalDate.parse(fecha)
+                                    )
+                                }
+                                "Semanal" -> {
+                                    corteBarberoViewModel.loadCortesSemanales(
+                                        idBarbero = barbero.idbarbero,
+                                        inicio = fechaInicio,
+                                        fin = fechaFin
+                                    )
+                                    generatePdfFromViewModel(
+                                        context,
+                                        corteBarberoViewModel,
+                                        "Semanal",
+                                        "resumen_semanal_${fechaInicio}_a_${fechaFin}_barbero_${barbero.idbarbero}",
+                                        lifecycleOwner,
+                                        fechaInicio = LocalDate.parse(fechaInicio),
+                                        fechaFin = LocalDate.parse(fechaFin)
+                                    )
+                                }
+                                "Mensual" -> {
+                                    corteBarberoViewModel.loadCortesMensuales(
+                                        idBarbero = barbero.idbarbero,
+                                        mes = mes.toInt(),
+                                        anio = anio.toInt()
+                                    )
+                                    generatePdfFromViewModel(
+                                        context,
+                                        corteBarberoViewModel,
+                                        "Mensual",
+                                        "resumen_mensual_${mes}_${anio}_barbero_${barbero.idbarbero}",
+                                        lifecycleOwner,
+                                        fechaInicio = LocalDate.of(anio.toInt(), mes.toInt(), 1)
+                                    )
+                                }
                             }
                         }
                         resetFields()
@@ -268,3 +316,4 @@ fun ResumenesScreen(context: Context, lifecycleOwner: LifecycleOwner) {
         }
     }
 }
+
