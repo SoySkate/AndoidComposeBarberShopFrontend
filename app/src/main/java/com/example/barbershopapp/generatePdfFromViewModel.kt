@@ -123,7 +123,14 @@ fun generatePdfResumen(
     // Guardar el PDF en el almacenamiento
     //val directory = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
     val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-    val file = File(directory, "$nombreArchivo.pdf")
+    val barberShopDir = File(directory, "barberShop")
+
+// Crear la carpeta "barberShop" si no existe
+    if (!barberShopDir.exists()) {
+        barberShopDir.mkdirs()
+    }
+
+    val file = File(barberShopDir, "$nombreArchivo.pdf")
 
     try {
         pdfDocument.writeTo(FileOutputStream(file))
