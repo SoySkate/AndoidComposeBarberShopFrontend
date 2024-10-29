@@ -215,15 +215,15 @@ fun SettingsNavBar(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            TextButton(
-                onClick = { /* Acción para Ajustes de App */ },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onBackground,
-                    contentColor = MaterialTheme.colorScheme.background
-                )
-            ) {
-                Text(text = "Ajustes App")
-            }
+//            TextButton(
+//                onClick = { /* Acción para Ajustes de App */ },
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = MaterialTheme.colorScheme.onBackground,
+//                    contentColor = MaterialTheme.colorScheme.background
+//                )
+//            ) {
+//                Text(text = "Ajustes App")
+//            }
 
             if (corteScreenOn == true) {
                 TextButton(
